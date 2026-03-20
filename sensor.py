@@ -72,6 +72,7 @@ class Sensor_BM280:
             status = 1
             while status != 0:
                 status = bus.read_byte_data(self.ADDRESS, self.REGISTER_STATUS)
+                status = status & 0b00001000
                 time.sleep(0.01)
 
     def enableTemperatureMeasurement(self):
