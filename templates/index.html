@@ -15,6 +15,7 @@
         Páratartalom: {{ humidity }} %
     </h3></div>
     <div id='myDiv'></div>
+    <div id='myDiv2'></div>
     <script>
         const loadedData = {{ data|tojson }}
 
@@ -58,9 +59,11 @@
             name: 'Páratartalom',
         };
 
-        var plotData = [trace1, trace2, trace3, trace4, trace5];
+        var plotData = [trace1, trace2, trace3, trace4];
+        var plotData2 = [trace5];
 
         Plotly.newPlot('myDiv', plotData);
+        Plotly.newPlot('myDiv2', plotData2);
     </script>
 </body>
 </html>
