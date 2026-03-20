@@ -36,7 +36,6 @@ class DataHandler:
     def appendData(self, dataRow: list):
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         self.data.append(dataRow.insert(0,timestamp))
-        self.dataBase.writeData()
 
 class Watcher:
     def __init__(self):
@@ -44,6 +43,7 @@ class Watcher:
         self.dataBase = DataHandler(LENGHT)
         dataRow = self.sensors.read()
         self.dataBase.appendData(dataRow)
+        self.dataBase.writeData()
 
 
     def run(self):
