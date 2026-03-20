@@ -2,7 +2,7 @@ import csv
 import os
 import time
 import threading
-from sensor import Sensor
+from sensor import SensorHandler
 from datetime import datetime
 from collections import deque
 import flask
@@ -38,13 +38,13 @@ class DataHandler:
             else:
                 break
 
-    def appendData(self, humidity, temperature):
+    def appendData(self, dataRow: list):
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        self.data.append([timestamp, humidity, temperature])
+        self.data.append(dataRow.insert(0,timestamp))
 
 class Watcher:
     def __init__(self):
-        self.sensor = Sensor()
+        self.sensors = SensorHandler()
         self.dataBase = DataHandler(LENGHT)
 
 
@@ -55,14 +55,9 @@ class Watcher:
 
     def mainLoop(self):
         while True:
-            for i in range(3):
-                humidity, temperature = self.sensor.read()
-                if humidity is not None and temperature is not None:
-                    self.dataBase.appendData(humidity, temperature)
-                    self.dataBase.writeData()
-                    break
-                else:
-                    time.sleep(1)
+            dataRow = self.sensors.read()
+            self.dataBase.appendData(dataRow)
+            self.dataBase.writeData()
             time.sleep(300)  # Wait for 5 minutes
 
 class Monitor:
