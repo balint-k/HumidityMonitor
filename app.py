@@ -35,7 +35,8 @@ class DataHandler:
 
     def appendData(self, dataRow: list):
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        self.data.append(dataRow.insert(0,timestamp))
+        dataRow.insert(0,timestamp)
+        self.data.append(dataRow)
 
 class Watcher:
     def __init__(self):
