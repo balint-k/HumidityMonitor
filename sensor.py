@@ -322,7 +322,7 @@ class SensorHandler:
             temperatureBM280 = self.bm280Device.getTemperature()
             pressureBM280 = self.bm280Device.getPressure()
             humidityBM280 = self.bm280Device.getHumidity()
-            return [10, 20, getHumidity, temperatureBM280, pressureBM280]
+            return [10, 20, humidityBM280, temperatureBM280, pressureBM280]
         except RuntimeError as error:
             print(error.args[0])
             return None, None
