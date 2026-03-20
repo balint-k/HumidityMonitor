@@ -46,16 +46,36 @@ class Sensor_BM280:
     REGISTER_digT3_MSB = 0x8D
     REGISTER_digT3_LSB = 0x8C
 
+    REGISTER_P1_MSB = 0x8F
+    REGISTER_P1_LSB = 0x8E
+    REGISTER_P2_MSB = 0x91
+    REGISTER_P2_LSB = 0x90
+    REGISTER_P3_MSB = 0x93
+    REGISTER_P3_LSB = 0x92
+    REGISTER_P4_MSB = 0x95
+    REGISTER_P4_LSB = 0x94
+    REGISTER_P5_MSB = 0x97
+    REGISTER_P5_LSB = 0x96
+    REGISTER_P6_MSB = 0x99
+    REGISTER_P6_LSB = 0x98
+    REGISTER_P7_MSB = 0x9B
+    REGISTER_P7_LSB = 0x9A
+    REGISTER_P8_MSB = 0x9D
+    REGISTER_P8_LSB = 0x9C
+    REGISTER_P9_MSB = 0x9F
+    REGISTER_P9_LSB = 0x9F
 
     def __init__(self):
         self.available = self.verifySensor()
         if self.available:
             self.enableTemperatureMeasurement()
+            self.enablePressureMeasurement()
 
     def exit(self):
         self.available = self.verifySensor()
         if self.available:
             self.disableTemperatureMeasurement()
+            self.disablePressureeasurement()
 
         
     def verifySensor(self) -> bool:
@@ -95,7 +115,7 @@ class Sensor_BM280:
             if masked != 0:
                 raise ValueError("Temperature measurement can\'t be disabled")
 
-    def getTemperature(self):
+    def getTemperature(self, get_t_fine = False):
         with SMBus() as bus:
             package1 = bus.read_byte_data(self.ADDRESS, self.REGISTER_TEMP_MSB)
             package2 = bus.read_byte_data(self.ADDRESS, self.REGISTER_TEMP_LSB)
@@ -116,12 +136,92 @@ class Sensor_BM280:
             package2 = bus.read_byte_data(self.ADDRESS, self.REGISTER_digT3_LSB)
             dig_T3 = package1 << 8 | package2
 
-            # bosch api .c-ből koppintva
-            var1 = ((((adc_T>>3) - (dig_T1<<1))) * (dig_T2)) >> 11
-            var2 = (((((adc_T>>4) - (dig_T1)) * ((adc_T>>4) - (dig_T1))) >> 12) * (dig_T3)) >> 14
-            t_fine = var1 + var2
-            T = (t_fine * 5 + 128) >> 8
-            return T
+        # bosch api .c-ből koppintva a kompenzalas
+        var1 = ((((adc_T>>3) - (dig_T1<<1))) * (dig_T2)) >> 11
+        var2 = (((((adc_T>>4) - (dig_T1)) * ((adc_T>>4) - (dig_T1))) >> 12) * (dig_T3)) >> 14
+        t_fine = var1 + var2
+
+        if get_t_fine:
+            return t_fine # nyomashoz
+
+        T = (t_fine * 5 + 128) >> 8
+        return T /100
+        # bosch datasheet: // Returns temperature in DegC, resolution is 0.01 DegC. Output value of “5123” equals 51.23 DegC.
+        # itt van float
+
+    def enablePressureMeasurement(self):
+        with SMBus() as bus:
+            registryContent = bus.read_byte_data(self.ADDRESS, self.REGISTER_CTRL_MEAS)
+            message = registryContent | 0b00001000 # 010 oversampling x2
+            bus.write_byte_data(self.ADDRESS, self.REGISTER_CTRL_MEAS, message)
+            registryContent = bus.read_byte_data(self.ADDRESS, self.REGISTER_CTRL_MEAS)
+            masked = registryContent & 0b00001000
+            if masked == 0:
+                raise ValueError("Pressure measurement can\'t be enabled")
+
+    def disablePressureeasurement(self):
+        with SMBus() as bus:
+            registryContent = bus.read_byte_data(self.ADDRESS, self.REGISTER_CTRL_MEAS)
+            message = registryContent & 0b11100011 
+            bus.write_byte_data(self.ADDRESS, self.REGISTER_CTRL_MEAS, message)
+            registryContent = bus.read_byte_data(self.ADDRESS, self.REGISTER_CTRL_MEAS)
+            masked = registryContent & 0b00011100
+            if masked != 0:
+                raise ValueError("Pressure measurement can\'t be disabled")
+
+    def getPressure(self):
+        with SMBus() as bus:
+            package1 = bus.read_byte_data(self.ADDRESS, self.REGISTER_PRESS_MSB)
+            package2 = bus.read_byte_data(self.ADDRESS, self.REGISTER_PRESS_LSB)
+            package3 = bus.read_byte_data(self.ADDRESS, self.REGISTER_PRESS_XLSB)
+
+            adc_T = package1 << 12 | package2 << 4 | package3 >> 4
+
+            package1 = bus.read_byte_data(self.ADDRESS, self.REGISTER_digP1_MSB)
+            package2 = bus.read_byte_data(self.ADDRESS, self.REGISTER_digP1_LSB)
+            dig_P1 = package1 << 8 | package2
+            package1 = bus.read_byte_data(self.ADDRESS, self.REGISTER_digP2_MSB)
+            package2 = bus.read_byte_data(self.ADDRESS, self.REGISTER_digP2_LSB)
+            dig_P2 = package1 << 8 | package2
+            package1 = bus.read_byte_data(self.ADDRESS, self.REGISTER_digP3_MSB)
+            package2 = bus.read_byte_data(self.ADDRESS, self.REGISTER_digP3_LSB)
+            dig_P3 = package1 << 8 | package2
+            package1 = bus.read_byte_data(self.ADDRESS, self.REGISTER_digP4_MSB)
+            package2 = bus.read_byte_data(self.ADDRESS, self.REGISTER_digP4_LSB)
+            dig_P4 = package1 << 8 | package2
+            package1 = bus.read_byte_data(self.ADDRESS, self.REGISTER_digP5_MSB)
+            package2 = bus.read_byte_data(self.ADDRESS, self.REGISTER_digP5_LSB)
+            dig_P5 = package1 << 8 | package2
+            package1 = bus.read_byte_data(self.ADDRESS, self.REGISTER_digP6_MSB)
+            package2 = bus.read_byte_data(self.ADDRESS, self.REGISTER_digP6_LSB)
+            dig_P6 = package1 << 8 | package2
+            package1 = bus.read_byte_data(self.ADDRESS, self.REGISTER_digP7_MSB)
+            package2 = bus.read_byte_data(self.ADDRESS, self.REGISTER_digP7_LSB)
+            dig_P7 = package1 << 8 | package2
+            package1 = bus.read_byte_data(self.ADDRESS, self.REGISTER_digP8_MSB)
+            package2 = bus.read_byte_data(self.ADDRESS, self.REGISTER_digP8_LSB)
+            dig_P8 = package1 << 8 | package2
+            package1 = bus.read_byte_data(self.ADDRESS, self.REGISTER_digP9_MSB)
+            package2 = bus.read_byte_data(self.ADDRESS, self.REGISTER_digP9_LSB)
+            dig_P9 = package1 << 8 | package2
+
+        t_fine = self.getTemperature(t_fine = True)
+        # datasheetbol kiszedett kompenzaci
+        var1 = (t_fine) - 128000
+        var2 = var1 * var1 * dig_P6
+        var2 = var2 + ((var1* dig_P5)<<17)
+        var2 = var2 + ((dig_P4)<<35)
+        var1 = ((var1 * var1 * dig_P3)>>8) + ((var1 * dig_P2)<<12)
+        var1 = ((((1)<<47)+var1))*(dig_P1)>>33
+        if (var1 == 0):
+            return 0 #// avoid exception caused by division by zero
+        p = 1048576-adc_P
+        p = (((p<<31)-var2)*3125)/var1
+        var1 = ((dig_P9) * (p>>13) * (p>>13)) >> 25
+        var2 = ((dig_P8) * p) >> 19
+        p = ((p + var1 + var2) >> 8) + ((dig_P7)<<4)
+        return p / 256 / 1000 # kPa
+        #// Output value of “24674867” represents 24674867/256 = 96386.2 Pa = 963.862 hPa
 
 class Sensor_DHT11:
     PIN = 7 
@@ -145,7 +245,8 @@ class SensorHandler:
             #humidity1 = self.dhtDevice.humidity
             self.bm280Device.triggerMeasurement()
             temperatureBM280 = self.bm280Device.getTemperature()
-            return [10, 20, 11, temperatureBM280, 110000]
+            pressureBM280 = self.bm280Device.getPressure()
+            return [10, 20, 11, temperatureBM280, pressureBM280]
         except RuntimeError as error:
             print(error.args[0])
             return None, None
