@@ -54,7 +54,7 @@ class SensorHandler:
         try:
             #temperature1 = self.dhtDevice.temperature
             #humidity1 = self.dhtDevice.humidity
-            return 10, 20, 11, 21, 110000
+            return [10, 20, 11, 21, 110000]
         except RuntimeError as error:
             print(error.args[0])
             return None, None
