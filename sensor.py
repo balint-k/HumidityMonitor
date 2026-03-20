@@ -205,7 +205,7 @@ class Sensor_BM280:
             package2 = bus.read_byte_data(self.ADDRESS, self.REGISTER_digP9_LSB)
             dig_P9 = package1 << 8 | package2
 
-        t_fine = self.getTemperature(t_fine = True)
+        t_fine = self.getTemperature(get_t_fine = True)
         # datasheetbol kiszedett kompenzaci
         var1 = (t_fine) - 128000
         var2 = var1 * var1 * dig_P6
