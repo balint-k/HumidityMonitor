@@ -70,12 +70,14 @@ class Sensor_BM280:
         if self.available:
             self.enableTemperatureMeasurement()
             self.enablePressureMeasurement()
+            self.enableHumidityMeasurement()
 
     def exit(self):
         self.available = self.verifySensor()
         if self.available:
             self.disableTemperatureMeasurement()
-            self.disablePressureeasurement()
+            self.disablePressureMeasurement()
+            self.disableHumidityMeasurement()
 
         
     def verifySensor(self) -> bool:
@@ -159,7 +161,7 @@ class Sensor_BM280:
             if masked == 0:
                 raise ValueError("Pressure measurement can\'t be enabled")
 
-    def disablePressureeasurement(self):
+    def disablePressureMeasurement(self):
         with SMBus() as bus:
             registryContent = bus.read_byte_data(self.ADDRESS, self.REGISTER_CTRL_MEAS)
             message = registryContent & 0b11100011 
@@ -222,6 +224,27 @@ class Sensor_BM280:
         p = ((p + var1 + var2) >> 8) + ((dig_P7)<<4)
         return p / 256 / 1000 # kPa
         #// Output value of “24674867” represents 24674867/256 = 96386.2 Pa = 963.862 hPa
+
+    def enableHumidityMeasurement(self):
+        with SMBus() as bus:
+            registryContent = bus.read_byte_data(self.ADDRESS, self.REGISTER_CTRL_HUM)
+            message = registryContent | 0b00000010 # 010 oversampling x2
+            bus.write_byte_data(self.ADDRESS, self.REGISTER_CTRL_HUM, message)
+            registryContent = bus.read_byte_data(self.ADDRESS, self.REGISTER_CTRL_HUM)
+            masked = registryContent & 0b00000010
+            if masked == 0:
+                raise ValueError("Humidity measurement can\'t be enabled")
+
+    def disableHumidityMeasurement(self):
+        with SMBus() as bus:
+            registryContent = bus.read_byte_data(self.ADDRESS, self.REGISTER_CTRL_HUM)
+            message = registryContent & 0b11111000 
+            bus.write_byte_data(self.ADDRESS, self.REGISTER_CTRL_HUM, message)
+            registryContent = bus.read_byte_data(self.ADDRESS, self.REGISTER_CTRL_HUM)
+            masked = registryContent & 0b00000111
+            if masked != 0:
+                raise ValueError("Humidity measurement can\'t be disabled")
+
 
 class Sensor_DHT11:
     PIN = 7 
