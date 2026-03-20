@@ -22,30 +22,28 @@ class DataHandler:
                 reader = csv.reader(f)
                 next(reader)  # Skip header
                 for row in reader:
-                    row = [row[0], float(row[1]), float(row[2])]
+                    row = [row[0], float(row[1]), float(row[2])], float(row[3]), float(row[4]), float(row[5])
                     self.data.append(row)
 
     def writeData(self):
-        for i in range(3):
-            try:
-                with open('data.csv', 'w', newline='') as f:
-                    writer = csv.writer(f)
-                    writer.writerow(["TimeStamp", "Humidity", "Temperature"])
-                    for row in self.data:
-                        writer.writerow(row)
-            except Exception as e:
-                time.sleep(1)
-            else:
-                break
+        with open('data.csv', 'w', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow(["TimeStamp", "Humidity", "Temperature"])
+            for row in self.data:
+                writer.writerow(row)
+
 
     def appendData(self, dataRow: list):
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         self.data.append(dataRow.insert(0,timestamp))
+        self.dataBase.writeData()
 
 class Watcher:
     def __init__(self):
         self.sensors = SensorHandler()
         self.dataBase = DataHandler(LENGHT)
+        dataRow = self.sensors.read()
+        self.dataBase.appendData(dataRow)
 
 
     def run(self):
