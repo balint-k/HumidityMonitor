@@ -175,7 +175,7 @@ class Sensor_BM280:
             package2 = bus.read_byte_data(self.ADDRESS, self.REGISTER_PRESS_LSB)
             package3 = bus.read_byte_data(self.ADDRESS, self.REGISTER_PRESS_XLSB)
 
-            adc_T = package1 << 12 | package2 << 4 | package3 >> 4
+            adc_P = package1 << 12 | package2 << 4 | package3 >> 4
 
             package1 = bus.read_byte_data(self.ADDRESS, self.REGISTER_digP1_MSB)
             package2 = bus.read_byte_data(self.ADDRESS, self.REGISTER_digP1_LSB)
