@@ -43,8 +43,6 @@ class Watcher:
         self.sensors = SensorHandler()
         self.dataBase = DataHandler(LENGHT)
         dataRow = self.sensors.read()
-        self.dataBase.appendData(dataRow)
-        self.dataBase.writeData()
 
 
     def run(self):
