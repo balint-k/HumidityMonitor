@@ -34,7 +34,31 @@
             name: 'Hőmérséklet',
         };
 
-        var plotData = [trace1, trace2];
+        var trace3 = {
+            x: loadedData.map(row => row[0]),
+            y: loadedData.map(row => row[3]),
+            mode: 'lines+markers',
+            type: 'scatter',
+            name: 'Páratartalom',
+        };
+
+        var trace4 = {
+            x: loadedData.map(row => row[0]),
+            y: loadedData.map(row => row[4]),
+            mode: 'lines+markers',
+            type: 'scatter',
+            name: 'Hőmérséklet',
+        };
+
+        var trace5 = {
+            x: loadedData.map(row => row[0]),
+            y: loadedData.map(row => row[5]),
+            mode: 'lines+markers',
+            type: 'scatter',
+            name: 'Páratartalom',
+        };
+
+        var plotData = [trace1, trace2, trace3, trace4, trace5];
 
         Plotly.newPlot('myDiv', plotData);
     </script>
