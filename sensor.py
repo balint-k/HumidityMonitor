@@ -274,10 +274,10 @@ class Sensor_BM280:
             package1 = bus.read_byte_data(self.ADDRESS, self.REGISTER_digH3)
             dig_H3 = package1
             package1 = bus.read_byte_data(self.ADDRESS, self.REGISTER_digH4_MSB)
-            package2 = bus.read_byte_data(self.ADDRESS, self.REGISTER_digH4_LSB)
+            package2 = bus.read_byte_data(self.ADDRESS, self.REGISTER_digH4_LSB_3_0)
             dig_H4 = package1 << 4 | (package2 & 0b00001111)
             package1 = bus.read_byte_data(self.ADDRESS, self.REGISTER_digH5_MSB)
-            package2 = bus.read_byte_data(self.ADDRESS, self.REGISTER_digH5_LSB)
+            package2 = bus.read_byte_data(self.ADDRESS, self.REGISTER_digH5_LSB_7_4)
             dig_H5 = package1 << 4 | (package2 >> 4)
             package1 = bus.read_byte_data(self.ADDRESS, self.REGISTER_digH6)
             dig_H6 = package1
