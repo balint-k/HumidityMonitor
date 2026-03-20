@@ -63,7 +63,7 @@ class Sensor_BM280:
     REGISTER_digP8_MSB = 0x9D
     REGISTER_digP8_LSB = 0x9C
     REGISTER_digP9_MSB = 0x9F
-    REGISTER_digP9_LSB = 0x9F
+    REGISTER_digP9_LSB = 0x9E
 
     def __init__(self):
         self.available = self.verifySensor()
