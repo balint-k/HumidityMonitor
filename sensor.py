@@ -65,6 +65,18 @@ class Sensor_BM280:
     REGISTER_digP9_MSB = 0x9F
     REGISTER_digP9_LSB = 0x9E
 
+    REGISTER_digH1 = 0xA1
+    REGISTER_digH2_MSB = 0xE2
+    REGISTER_digH2_LSB = 0xE1
+    REGISTER_digH3 = 0xE3
+    REGISTER_digH4_MSB = 0xE4
+    REGISTER_digH4_LSB_3_0 = 0xE5
+    REGISTER_digH5_MSB = 0xE6
+    REGISTER_digH5_LSB_7_4 = 0xE5
+    REGISTER_digH6 = 0xE7
+
+
+
     def __init__(self):
         self.available = self.verifySensor()
         if self.available:
@@ -245,6 +257,46 @@ class Sensor_BM280:
             if masked != 0:
                 raise ValueError("Humidity measurement can\'t be disabled")
 
+    def getHumidity(self):
+        with SMBus() as bus:
+            package1 = bus.read_byte_data(self.ADDRESS, self.REGISTER_HUM_MSB)
+            package2 = bus.read_byte_data(self.ADDRESS, self.REGISTER_HUM_LSB)
+
+            adc_H = package1 << 8 | package2
+
+            package1 = bus.read_byte_data(self.ADDRESS, self.REGISTER_digH1)
+            dig_H1 = package1
+            package1 = bus.read_byte_data(self.ADDRESS, self.REGISTER_digH2_MSB)
+            package2 = bus.read_byte_data(self.ADDRESS, self.REGISTER_digH2_LSB)
+            dig_H2 = package1 << 8 | package2
+            package1 = bus.read_byte_data(self.ADDRESS, self.REGISTER_digH3)
+            dig_H3 = package1
+            package1 = bus.read_byte_data(self.ADDRESS, self.REGISTER_digH3)
+            dig_H3 = package1
+            package1 = bus.read_byte_data(self.ADDRESS, self.REGISTER_digH4_MSB)
+            package2 = bus.read_byte_data(self.ADDRESS, self.REGISTER_digH4_LSB)
+            dig_H4 = package1 << 4 | (package2 & 0b00001111)
+            package1 = bus.read_byte_data(self.ADDRESS, self.REGISTER_digH5_MSB)
+            package2 = bus.read_byte_data(self.ADDRESS, self.REGISTER_digH5_LSB)
+            dig_H5 = package1 << 4 | (package2 >> 4)
+            package1 = bus.read_byte_data(self.ADDRESS, self.REGISTER_digH6)
+            dig_H6 = package1
+
+        t_fine = self.getTemperature(get_t_fine = True)
+        v_x1_u32r = (t_fine - (76800))
+        v_x1_u32r = (((((adc_H << 14) - ((dig_H4) << 20) - ((dig_H5) * v_x1_u32r)) +
+        (16384)) >> 15) * (((((((v_x1_u32r * (dig_H6)) >> 10) * (((v_x1_u32r *
+        (dig_H3)) >> 11) + (32768))) >> 10) + (2097152)) *
+        (dig_H2) + 8192) >> 14));
+        v_x1_u32r = (v_x1_u32r - (((((v_x1_u32r >> 15) * (v_x1_u32r >> 15)) >> 7) * (dig_H1)) >> 4))
+        #v_x1_u32r = (v_x1_u32r < 0 ? 0 : v_x1_u32r)
+        #v_x1_u32r = (v_x1_u32r > 419430400 ? 419430400 : v_x1_u32r)
+        if v_x1_u32r < 0:
+            v_x1_u32r = 0
+        if v_x1_u32r > 419430400:
+            v_x1_u32r = 419430400
+        return (v_x1_u32r>>12) / 1024
+        # // Output value of “47445” represents 47445/1024 = 46.333 %RH
 
 class Sensor_DHT11:
     PIN = 7 
@@ -269,7 +321,8 @@ class SensorHandler:
             self.bm280Device.triggerMeasurement()
             temperatureBM280 = self.bm280Device.getTemperature()
             pressureBM280 = self.bm280Device.getPressure()
-            return [10, 20, 11, temperatureBM280, pressureBM280]
+            humidityBM280 = self.bm280Device.getHumidity()
+            return [10, 20, getHumidity, temperatureBM280, pressureBM280]
         except RuntimeError as error:
             print(error.args[0])
             return None, None
