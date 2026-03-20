@@ -59,59 +59,59 @@ class Sensor_BM280:
         
     def verifySensor(self) -> bool:
         with SMBus() as bus:
-            registryContent = bus.read_byte_data(self.ADDRESS, self.REGISTER_ID)
+            registryContent = bus.bus.read_byte_data(self.ADDRESS, self.REGISTER_ID)
         return registryContent == self.ID
 
     def triggerMeasurement(self):
         with SMBus() as bus:
-            registryContent = bus.read_byte_data(self.ADDRESS, self.REGISTER_CTRL_MEAS)
+            registryContent = bus.bus.read_byte_data(self.ADDRESS, self.REGISTER_CTRL_MEAS)
             message = registryContent | 0b00000001
-            bus.write_byte_data(self.ADDRESS, self.REGISTER_CTRL_MEAS, message)
+            bus.bus.write_byte_data(self.ADDRESS, self.REGISTER_CTRL_MEAS, message)
             
             status = 1
             while status != 0:
-                status = bus.read_byte_data(self.ADDRESS, self.REGISTER_STATUS)
+                status = bus.bus.read_byte_data(self.ADDRESS, self.REGISTER_STATUS)
                 time.sleep(0.01)
 
     def enableTemperatureMeasurement(self):
         with SMBus() as bus:
-            registryContent = bus.read_byte_data(self.ADDRESS, self.REGISTER_CTRL_MEAS)
+            registryContent = bus.bus.read_byte_data(self.ADDRESS, self.REGISTER_CTRL_MEAS)
             message = registryContent | 0b01000000 # 010 oversampling x2
-            bus.write_byte_data(self.ADDRESS, self.REGISTER_CTRL_MEAS, message)
-            registryContent = bus.read_byte_data(self.ADDRESS, self.REGISTER_CTRL_MEAS)
+            bus.bus.write_byte_data(self.ADDRESS, self.REGISTER_CTRL_MEAS, message)
+            registryContent = bus.bus.read_byte_data(self.ADDRESS, self.REGISTER_CTRL_MEAS)
             masked = registryContent & 0b01000000
             if masked == 0:
                 raise ValueError("Temperature measurement can\'t be enabled")
 
     def disableTemperatureMeasurement(self):
         with SMBus() as bus:
-            registryContent = bus.read_byte_data(self.ADDRESS, self.REGISTER_CTRL_MEAS)
+            registryContent = bus.bus.read_byte_data(self.ADDRESS, self.REGISTER_CTRL_MEAS)
             message = registryContent & 0b00011111 
-            bus.write_byte_data(self.ADDRESS, self.REGISTER_CTRL_MEAS, message)
-            registryContent = bus.read_byte_data(self.ADDRESS, self.REGISTER_CTRL_MEAS)
+            bus.bus.write_byte_data(self.ADDRESS, self.REGISTER_CTRL_MEAS, message)
+            registryContent = bus.bus.read_byte_data(self.ADDRESS, self.REGISTER_CTRL_MEAS)
             masked = registryContent & 0b11100000
             if masked != 0:
                 raise ValueError("Temperature measurement can\'t be disabled")
 
     def getTemperature(self):
         with SMBus() as bus:
-            package1 = bus.read_byte_data(self.ADDRESS, self.REGISTER_TEMP_MSB)
-            package2 = bus.read_byte_data(self.ADDRESS, self.REGISTER_TEMP_LSB)
-            package3 = bus.read_byte_data(self.ADDRESS, self.REGISTER_TEMP_XLSB)
+            package1 = bus.bus.read_byte_data(self.ADDRESS, self.REGISTER_TEMP_MSB)
+            package2 = bus.bus.read_byte_data(self.ADDRESS, self.REGISTER_TEMP_LSB)
+            package3 = bus.bus.read_byte_data(self.ADDRESS, self.REGISTER_TEMP_XLSB)
 
             adc_T = package1 << 12 | package2 << 4 | package3 >> 4
 
 
-            package1 = bus.read_byte_data(self.ADDRESS, self.REGISTER_digT1_MSB)
-            package2 = bus.read_byte_data(self.ADDRESS, self.REGISTER_digT1_LSB)
+            package1 = bus.bus.read_byte_data(self.ADDRESS, self.REGISTER_digT1_MSB)
+            package2 = bus.bus.read_byte_data(self.ADDRESS, self.REGISTER_digT1_LSB)
             dig_T1 = package1 << 8 | package2
 
-            package1 = bus.read_byte_data(self.ADDRESS, self.REGISTER_digT2_MSB)
-            package2 = bus.read_byte_data(self.ADDRESS, self.REGISTER_digT2_LSB)
+            package1 = bus.bus.read_byte_data(self.ADDRESS, self.REGISTER_digT2_MSB)
+            package2 = bus.bus.read_byte_data(self.ADDRESS, self.REGISTER_digT2_LSB)
             dig_T2 = package1 << 8 | package2
 
-            package1 = bus.read_byte_data(self.ADDRESS, self.REGISTER_digT3_MSB)
-            package2 = bus.read_byte_data(self.ADDRESS, self.REGISTER_digT3_LSB)
+            package1 = bus.bus.read_byte_data(self.ADDRESS, self.REGISTER_digT3_MSB)
+            package2 = bus.bus.read_byte_data(self.ADDRESS, self.REGISTER_digT3_LSB)
             dig_T3 = package1 << 8 | package2
 
             # bosch api .c-ből koppintva
