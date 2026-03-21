@@ -67,6 +67,7 @@ int main(){
 	/* not strictly required here, but if the app wasn't exiting... */
 	gpiod_line_request_release(request);
 
+    FILE *fptr;
     fptr = fopen("filename.txt", "w");
 
     for ( i = 0; i<520; i++ ){
