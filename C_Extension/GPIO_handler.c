@@ -64,9 +64,9 @@ close_chip:
 int print_value(unsigned int offset, enum gpiod_line_value value)
 {
 	if (value == GPIOD_LINE_VALUE_ACTIVE)
-		return 1
+		return 1;
 	else if (value == GPIOD_LINE_VALUE_INACTIVE) {
-		return 0
+		return 0;
 	} else {
 		fprintf(stderr, "error reading value: %s\n",
 			strerror(errno));
