@@ -7,7 +7,7 @@
 #include "GPIO_handler.h"
 
 /* Request a line as input. */
-static struct gpiod_line_request *request_input_line(const char *chip_path,
+struct gpiod_line_request *request_input_line(const char *chip_path,
 						     unsigned int offset,
 						     const char *consumer)
 {
@@ -61,7 +61,7 @@ close_chip:
 	return request;
 }
 
-static int print_value(unsigned int offset, enum gpiod_line_value value)
+int print_value(unsigned int offset, enum gpiod_line_value value)
 {
 	if (value == GPIOD_LINE_VALUE_ACTIVE)
 		printf("%d=Active\n", offset);
