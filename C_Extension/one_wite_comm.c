@@ -8,7 +8,20 @@
 #include <stdlib.h>
 #include <string.h>
 
+static int print_value(unsigned int offset, enum gpiod_line_value value)
+{
+	if (value == GPIOD_LINE_VALUE_ACTIVE)
+		printf("%d=Active\n", offset);
+	else if (value == GPIOD_LINE_VALUE_INACTIVE) {
+		printf("%d=Inactive\n", offset);
+	} else {
+		fprintf(stderr, "error reading value: %s\n",
+			strerror(errno));
+		return EXIT_FAILURE;
+	}
 
+	return EXIT_SUCCESS;
+}
 
 int main(){
 
@@ -53,7 +66,7 @@ int main(){
 
         clock_gettime(CLOCK_MONOTONIC, &start);
         value = gpiod_line_request_get_value(request, line_offset);
-	    printf(value);
+	    ret = print_value(line_offset, value);
         // Read .....
         do {
             clock_gettime(CLOCK_MONOTONIC, &now);
