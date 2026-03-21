@@ -40,7 +40,28 @@ int main(){
 
 
     // ======== [Trigger] =================================== //
+    enum gpiod_line_value value = GPIOD_LINE_VALUE_ACTIVE;
+    request = request_output_line(chip_path, line_offset, value,
+				      "toggle-line-value");
+    // 20 ms down
+    gpiod_line_request_set_value(request, line_offset, GPIOD_LINE_VALUE_INACTIVE);
+    clock_gettime(CLOCK_MONOTONIC, &start);
+    do {
+        clock_gettime(CLOCK_MONOTONIC, &now);
+        elapsed_ns = (now.tv_sec - start.tv_sec) * 1000000000L + (now.tv_nsec - start.tv_nsec);
+        printf("Wait...\n");
+    } while (elapsed_ns < 20 * 1000 * 1000);
 
+    // 2 ms up
+    gpiod_line_request_set_value(request, line_offset, GPIOD_LINE_VALUE_ACTIVE);
+    do {
+        clock_gettime(CLOCK_MONOTONIC, &now);
+        elapsed_ns = (now.tv_sec - start.tv_sec) * 1000000000L + (now.tv_nsec - start.tv_nsec);
+        printf("Wait...\n");
+    } while (elapsed_ns < 2 * 1000 * 1000);
+
+
+    gpiod_line_request_set_value(request, line_offset, GPIOD_LINE_VALUE_INACTIVE);
 
     // ======== [Read] =================================== //
     request = request_input_line(chip_path, line_offset, "get-line-value");
