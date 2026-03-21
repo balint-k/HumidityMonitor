@@ -7,8 +7,9 @@ int main(){
     printf("Read Started");
 
     int i;
-    uint64_t ns = 10 * 1000;
+    uint64_t elapsed_ns;
     struct timespec start, now;
+    uint64_t ns = 10 * 1000;
 
     // 80 + 80 us -> 16 ~ 20 sample
     // 40 bit
@@ -23,7 +24,7 @@ int main(){
         printf("Iteration %d\n", i);
         do {
             clock_gettime(CLOCK_MONOTONIC, &now);
-            uint64_t elapsed_ns = (now.tv_sec - start.tv_sec) * 1000000000L + (now.tv_nsec - start.tv_nsec);
+            elapsed_ns = (now.tv_sec - start.tv_sec) * 1000000000L + (now.tv_nsec - start.tv_nsec);
         } while (elapsed_ns < ns);
     }
     return 0;
