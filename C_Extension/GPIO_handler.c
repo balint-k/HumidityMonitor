@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "GPIO_utils.h"
+
 /* Request a line as input. */
 static struct gpiod_line_request *request_input_line(const char *chip_path,
 						     unsigned int offset,
