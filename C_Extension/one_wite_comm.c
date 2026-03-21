@@ -2,7 +2,7 @@
 #include <time.h>
 #include <stdint.h>
 
-#include <GPIO_handler.h>
+#include "GPIO_handler.h"
 #include <errno.h>
 #include <gpiod.h>
 #include <stdlib.h>
