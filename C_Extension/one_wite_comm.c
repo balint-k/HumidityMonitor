@@ -7,7 +7,7 @@ int main(){
     printf("Read Started");
 
     int i;
-    uint64_t us = 10;
+    uint64_t ns = 10 * 1000;
     struct timespec start, now;
 
     // 80 + 80 us -> 16 ~ 20 sample
