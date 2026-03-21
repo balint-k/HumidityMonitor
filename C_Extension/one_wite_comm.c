@@ -4,7 +4,7 @@
 
 
 int main(){
-    printf("Read Started");
+    printf("Read Started\n");
 
     int i;
     uint64_t elapsed_ns;
@@ -25,6 +25,7 @@ int main(){
         do {
             clock_gettime(CLOCK_MONOTONIC, &now);
             elapsed_ns = (now.tv_sec - start.tv_sec) * 1000000000L + (now.tv_nsec - start.tv_nsec);
+            printf("Wait...\n");
         } while (elapsed_ns < ns);
     }
     return 0;
