@@ -59,7 +59,7 @@ int main(){
     } while (elapsed_ns < 2 * 1000 * 1000);
 
 
-    gpiod_line_request_set_value(request, line_offset, GPIOD_LINE_VALUE_INACTIVE);
+    //gpiod_line_request_set_value(request, line_offset, GPIOD_LINE_VALUE_INACTIVE);
 
 	gpiod_line_request_release(request);
     // ======== [Read] =================================== //
