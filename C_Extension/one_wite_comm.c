@@ -53,7 +53,7 @@ int main(){
 
         clock_gettime(CLOCK_MONOTONIC, &start);
         value = gpiod_line_request_get_value(request, line_offset);
-	    printf(value)
+	    printf(value);
         // Read .....
         do {
             clock_gettime(CLOCK_MONOTONIC, &now);
