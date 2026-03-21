@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <time.h>
 #include <stdint.h>
+#include <gpiod.h>
 
 
 int main(){
