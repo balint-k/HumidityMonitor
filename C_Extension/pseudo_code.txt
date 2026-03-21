@@ -1,0 +1,19 @@
+
+# TRIGGER
+    Beállítom a pint outputra (HIGH)
+    Várok egy kis időt
+    Beállítom low-ra
+    Több mint 18 ms wait (25 ms)
+    Beállítom magasra
+    Itt várok a fasz se tudja mennyit
+
+# Várakozás
+    Beállítom a pint inputra by default low -ra 
+    80 ms lent, majd 80 ms fent, majd adatküldés
+    40 bit x
+        hosszu / rovid
+
+# Vege
+    Valahova kiköpködöm az adatot
+
+
