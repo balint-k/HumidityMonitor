@@ -61,6 +61,7 @@ int main(){
 
     gpiod_line_request_set_value(request, line_offset, GPIOD_LINE_VALUE_INACTIVE);
 
+	gpiod_line_request_release(request);
     // ======== [Read] =================================== //
     request = request_input_line(chip_path, line_offset, "get-line-value");
     if (!request) {
