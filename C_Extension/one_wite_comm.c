@@ -101,7 +101,7 @@ int main(void)
 	ret = print_value(line_offset, value);
 
 	/* not strictly required here, but if the app wasn't exiting... */
-	gpiod_line_request_release(request);
+	//gpiod_line_request_release(request); / lehalt a compile erre
 
 	return ret;
 }
