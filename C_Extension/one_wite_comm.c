@@ -8,20 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-static int print_value_m(unsigned int offset, enum gpiod_line_value value)
-{
-	if (value == GPIOD_LINE_VALUE_ACTIVE)
-		printf("%d=Active\n", offset);
-	else if (value == GPIOD_LINE_VALUE_INACTIVE) {
-		printf("%d=Inactive\n", offset);
-	} else {
-		fprintf(stderr, "error reading value: %s\n",
-			strerror(errno));
-		return EXIT_FAILURE;
-	}
 
-	return EXIT_SUCCESS;
-}
 
 int main(){
 
@@ -62,12 +49,14 @@ int main(){
 			strerror(errno));
 		return EXIT_FAILURE;
 	}
+
+    int measurement[520];
+
     for ( i = 0; i<520; i++ ){
 
         clock_gettime(CLOCK_MONOTONIC, &start);
         value = gpiod_line_request_get_value(request, line_offset);
-	    ret = print_value_m(line_offset, value);
-        // Read .....
+	    measurement[i] = print_value(line_offset, value);
         do {
             clock_gettime(CLOCK_MONOTONIC, &now);
             elapsed_ns = (now.tv_sec - start.tv_sec) * 1000000000L + (now.tv_nsec - start.tv_nsec);
@@ -77,6 +66,19 @@ int main(){
 
 	/* not strictly required here, but if the app wasn't exiting... */
 	gpiod_line_request_release(request);
+
+    fptr = fopen("filename.txt", "w");
+
+    for ( i = 0; i<520; i++ ){
+        if (measurement[i] == 0){
+            fprintf(fptr, "0\n");
+        }
+        else{
+            fprintf(fptr, "1\n");
+        }
+    }
+
+    fclose(fptr);
 
     return 0;
 }
