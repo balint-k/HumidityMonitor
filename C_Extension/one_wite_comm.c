@@ -40,9 +40,7 @@ int main(){
 
 
     // ======== [Trigger] =================================== //
-    enum gpiod_line_value value = GPIOD_LINE_VALUE_ACTIVE;
-    request = request_output_line(chip_path, line_offset, value,
-				      "toggle-line-value");
+    request = request_output_line(chip_path, line_offset, GPIOD_LINE_VALUE_ACTIVE, "toggle-line-value");
     // 20 ms down
     gpiod_line_request_set_value(request, line_offset, GPIOD_LINE_VALUE_INACTIVE);
     clock_gettime(CLOCK_MONOTONIC, &start);
