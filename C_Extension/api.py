@@ -9,7 +9,7 @@ def readSensor():
         data = f.read()
     data = data.replace("\n", "")
     message = ""
-    print(data)
+    #print(data)
     for i in data.split("10"):
         if "111" in i:
             message += "1"
@@ -18,11 +18,16 @@ def readSensor():
         else:
             message += "0"
 
-    print(message)
-    print(message[-41:-33])
-    print(message[-33:-25])
-    print(message[-25:-17])
-    print(message[-17:-9])
-    print(message[-9:])
+    #print(message)
+    humidity = bin(eval("0b"+message[-41:-33]))
+    humidityDec = bin(eval("0b"+message[-33:-25]))
+    temperature = bin(eval("0b"+message[-25:-17]))
+    temperatureDec = bin(eval("0b"+message[-17:-9]))
+    parity = bin(eval("0b"+message[-9:-1]))
+    print(humidity)
+    print(humidityDec)
+    print(temperature)
+    print(temperatureDec)
+    print(parity)
 
 readSensor()
