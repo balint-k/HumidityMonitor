@@ -28,7 +28,7 @@ class DataHandler:
     def writeData(self):
         with open('data.csv', 'w', newline='') as f:
             writer = csv.writer(f)
-            writer.writerow(["TimeStamp", "Humidity", "Temperature"])
+            writer.writerow(["TimeStamp", "HumidityDHT11", "TemperatureDHT11", "HumidityBM280", "TemperatureBM280", "PressureBM280"])
             for row in self.data:
                 writer.writerow(row)
 
@@ -69,8 +69,8 @@ class Monitor:
         @self.app.route('/')
         def index():
             data = list(self.watcher.dataBase.data)
-            temperature = self.watcher.dataBase.data[-1][2]
-            humidity = self.watcher.dataBase.data[-1][1]
+            temperature = self.watcher.dataBase.data[-1][4]
+            humidity = self.watcher.dataBase.data[-1][3]
             lastReadingTime = self.watcher.dataBase.data[-1][0]
             return flask.render_template('index.html', data=data, temperature=temperature, humidity=humidity, lastReadingTime=lastReadingTime)
         

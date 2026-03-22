@@ -318,7 +318,7 @@ class SensorHandler:
 
     def read(self):
         try:
-            temperatureDHT11 , humidityDHT11 = getData()
+            humidityDHT11, temperatureDHT11 = getData()
             self.bm280Device.triggerMeasurement()
             temperatureBM280 = self.bm280Device.getTemperature()
             pressureBM280 = self.bm280Device.getPressure()

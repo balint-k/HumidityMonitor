@@ -80,6 +80,3 @@ def getMostFrequentValue(lista):
     return maxItem
 
 
-
-    
-print(getData())
