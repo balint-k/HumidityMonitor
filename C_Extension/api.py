@@ -32,9 +32,9 @@ def readSensor():
             if data[-i] == "1":
                 count += 1
         if count % 2 == 1:
-            parity_calcualted = "1" + e_c 
+            parity_calcualted = "1" + parity_calcualted 
         else:
-            parity_calcualted = "0" + e_c 
+            parity_calcualted = "0" + parity_calcualted 
         count = int((count - count % 2) / 2) # kovi
 
     print(parity_calcualted == parity)
