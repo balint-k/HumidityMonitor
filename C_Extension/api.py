@@ -13,17 +13,16 @@ def readSensor():
     for i in data.split("10"):
         if "111" in i:
             message += "1"
-            print(1)
         elif "111111111111" in i:
             pass
         else:
             message += "0"
-            print(0)
 
-    print(message[-40:-32])
-    print(message[-32:-24])
-    print(message[-24:-16])
-    print(message[-16:-8])
-    print(message[-8:])
+    print(message)
+    print(message[-41:-33])
+    print(message[-33:-25])
+    print(message[-25:-17])
+    print(message[-17:-9])
+    print(message[-9:])
 
 readSensor()
