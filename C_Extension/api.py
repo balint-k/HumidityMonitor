@@ -40,6 +40,36 @@ def readSensor():
     print(parity_calcualted == parity)
     humidity = eval("0b"+ humidity)
     temperature = eval("0b"+ temperature)
-    print(humidity, temperature)
+    return humidity, temperature
+
+def getData():
+    measuredHumidity = []
+    measuredTemperature = []
+    for i in range(20):
+        humidity, temperature = readSensor()
+        measuredHumidity.append(humidity)
+        measuredTemperature.append(temperature)
+
+    return getMostFrequentValue(measuredHumidity), getMostFrequentValue(measuredTemperature)
     
-readSensor()
+def getMostFrequentValue(lista):
+    table = {}
+    for item in lista:
+        if item not in table.keys():
+            table[item] = 1
+        else:
+            table[item] += 1
+
+    maxItem = None
+    count = 0
+    for item in table.keys():
+        if table[item] > count:
+            count = table[item]
+            maxItem = item
+
+    return maxItem
+
+
+
+    
+getData()
