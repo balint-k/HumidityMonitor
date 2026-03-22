@@ -38,7 +38,8 @@ def readSensor():
         count = int((count - count % 2) / 2) # kovi
 
     print(parity_calcualted == parity)
-    print(int(bin(eval("0b"+ humidity))))
-    print(int(bin(eval("0b"+ temperature))))
+    humidity = bin(eval("0b"+ humidity))
+    temperature = bin(eval("0b"+ temperature))
+    print(humidity, temperature)
     
 readSensor()
