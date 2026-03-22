@@ -7,7 +7,7 @@ def readSensor():
     result = subprocess.run([PROGRAM_PATH], capture_output=True, text=True)
     with open("measurement.txt", "r") as f:
         data = f.read()
-    data = data.repalce("\n", "")
+    data = data.replace("\n", "")
     message = ""
     print(data)
     for i in data.split("10"):
