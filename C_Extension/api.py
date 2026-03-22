@@ -19,19 +19,26 @@ def readSensor():
             message += "0"
 
     #print(message)
-    humidity = bin(eval("0b"+message[-41:-33]))
-    humidityDec = bin(eval("0b"+message[-33:-25]))
-    temperature = bin(eval("0b"+message[-25:-17]))
-    temperatureDec = bin(eval("0b"+message[-17:-9]))
-    parity = bin(eval("0b"+message[-9:-1]))
+    humidity = message[-41:-33]
+    humidityDec = message[-33:-25]
+    temperature = message[-25:-17]
+    temperatureDec = message[-17:-9]
+    parity = message[-9:-1]
 
+    parity_calcualted = ""
+    count = 0
+    for i in range(1,9):
+        for data in [humidity,humidityDec,temperature,temperatureDec]:
+            if data[-i] == "1":
+                count += 1
+        if count % 2 == 1:
+            parity_calcualted = "1" + e_c 
+        else:
+            parity_calcualted = "0" + e_c 
+        count = int((count - count % 2) / 2) # kovi
 
-    print(humidity)
-    print(humidityDec)
-    print(temperature)
-    print(temperatureDec)
-    print(parity)
-    parity_calc = humidity + humidityDec + temperature + temperatureDec
-    print(parity_calc)
-
+    print(parity_calcualted == parity)
+    print(int(bin(eval("0b"+ humidity))))
+    print(int(bin(eval("0b"+ temperature))))
+    
 readSensor()
