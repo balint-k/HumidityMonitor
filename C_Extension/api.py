@@ -37,18 +37,20 @@ def readSensor():
             parity_calcualted = "0" + parity_calcualted 
         count = int((count - count % 2) / 2) # kovi
 
-    print(parity_calcualted == parity)
-    humidity = eval("0b"+ humidity)
-    temperature = eval("0b"+ temperature)
-    return humidity, temperature
+    if parity_calcualted == parity:
+        humidity = eval("0b"+ humidity)
+        temperature = eval("0b"+ temperature)
+        return humidity, temperature
+    return None, None
 
 def getData():
     measuredHumidity = []
     measuredTemperature = []
     for i in range(20):
         humidity, temperature = readSensor()
-        measuredHumidity.append(humidity)
-        measuredTemperature.append(temperature)
+        if humidity != None and temperature != None:
+            measuredHumidity.append(humidity)
+            measuredTemperature.append(temperature)
 
     return getMostFrequentValue(measuredHumidity), getMostFrequentValue(measuredTemperature)
     
@@ -72,4 +74,4 @@ def getMostFrequentValue(lista):
 
 
     
-getData()
+print(getData())
