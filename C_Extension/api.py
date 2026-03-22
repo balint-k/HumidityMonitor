@@ -24,10 +24,14 @@ def readSensor():
     temperature = bin(eval("0b"+message[-25:-17]))
     temperatureDec = bin(eval("0b"+message[-17:-9]))
     parity = bin(eval("0b"+message[-9:-1]))
+
+
     print(humidity)
     print(humidityDec)
     print(temperature)
     print(temperatureDec)
     print(parity)
+    parity_calc = humidity + humidityDec + temperature + temperatureDec
+    print(parity_calc)
 
 readSensor()
