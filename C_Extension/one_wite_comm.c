@@ -31,6 +31,8 @@ int main(){
     struct timespec start, now;
     uint64_t ns = 10 * 1000;
 
+    
+    int measurement[520];
     // 80 + 80 us -> 16 ~ 20 sample
     // 40 bit
     //    50 us low 30 us high (0) or 50 us low 70 us high (1)
@@ -70,7 +72,6 @@ int main(){
 		return EXIT_FAILURE;
 	}
 
-    int measurement[520];
 
     for ( i = 0; i<520; i++ ){
 
@@ -80,7 +81,7 @@ int main(){
         do {
             clock_gettime(CLOCK_MONOTONIC, &now);
             elapsed_ns = (now.tv_sec - start.tv_sec) * 1000000000L + (now.tv_nsec - start.tv_nsec);
-            printf("Wait...\n");
+            //printf("Wait...\n");
         } while (elapsed_ns < ns);
     }
 
@@ -88,7 +89,7 @@ int main(){
 	gpiod_line_request_release(request);
 
     FILE *fptr;
-    fptr = fopen("filename.txt", "w");
+    fptr = fopen("measurement.txt", "w");
 
     for ( i = 0; i<520; i++ ){
         if (measurement[i] == 0){
