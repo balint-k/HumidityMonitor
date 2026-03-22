@@ -8,4 +8,16 @@ def readSensor():
     with open("measurement.txt", "r") as f:
         data = f.read()
 
-    print(data)
+    message = ""
+
+    for i in data.split("10"):
+        if "111" in i:
+            message += "1"
+        elif "111111111111" in i:
+            pass
+        else:
+            message += "1"
+
+    print(message)
+
+readSensor()
