@@ -20,6 +20,10 @@ def readSensor():
             message += "0"
             print(0)
 
-    print(message)
+    print(message[-40:-32])
+    print(message[-32:-24])
+    print(message[-24:-16])
+    print(message[-16:-8])
+    print(message[-8:])
 
 readSensor()
