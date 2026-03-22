@@ -27,15 +27,18 @@ def readSensor():
 
     parity_calcualted = ""
     count = 0
-    for i in range(1,9):
-        for data in [humidity,humidityDec,temperature,temperatureDec]:
-            if data[-i] == "1":
-                count += 1
-        if count % 2 == 1:
-            parity_calcualted = "1" + parity_calcualted 
-        else:
-            parity_calcualted = "0" + parity_calcualted 
-        count = int((count - count % 2) / 2) # kovi
+    try:
+        for i in range(1,9):
+            for data in [humidity,humidityDec,temperature,temperatureDec]:
+                if data[-i] == "1":
+                    count += 1
+            if count % 2 == 1:
+                parity_calcualted = "1" + parity_calcualted 
+            else:
+                parity_calcualted = "0" + parity_calcualted 
+            count = int((count - count % 2) / 2) # kovi
+    except IndexError:
+        parity_calcualted = "error"
 
     if parity_calcualted == parity:
         humidity = eval("0b"+ humidity)
