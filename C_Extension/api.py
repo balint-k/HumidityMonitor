@@ -1,5 +1,5 @@
 import subprocess
-
+import time
 
 PROGRAM_PATH = "start_comm"
 
@@ -48,6 +48,7 @@ def readSensor():
     if parity_calcualted == parity:
         humidity = eval("0b"+ humidity)
         temperature = eval("0b"+ temperature)
+        print(humidity, temperature)
         return humidity, temperature
     return None, None
 
@@ -55,6 +56,7 @@ def getData():
     measuredHumidity = []
     measuredTemperature = []
     for i in range(20):
+        time.sleep(1)
         humidity, temperature = readSensor()
         if humidity != None and temperature != None:
             measuredHumidity.append(humidity)
@@ -78,5 +80,4 @@ def getMostFrequentValue(lista):
             maxItem = item
 
     return maxItem
-
 
