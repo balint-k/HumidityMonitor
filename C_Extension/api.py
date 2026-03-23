@@ -10,7 +10,7 @@ def readSensor():
             data = f.read()
     except FileNotFoundError:
         result = subprocess.run(["./C_Extension/"+PROGRAM_PATH], capture_output=True, text=True)
-        with open("C_Extension/measurement.txt", "r") as f:
+        with open("measurement.txt", "r") as f:
             data = f.read()
     data = data.replace("\n", "")
     message = ""
